@@ -1,0 +1,16 @@
+[package]
+name = "fetch-stats"
+version = "0.1.0"
+edition = "2021"
+description = "Fetches real GitHub profile/contribution stats via the GraphQL API and writes data.json in the exact shape main/src/journal/data.rs expects."
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+anyhow = "1"
+chrono = "0.4"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+# `tls` is ureq's default feature and is what gives us https:// support —
+# kept explicit here so it's not accidentally dropped later.
+ureq = { version = "2", features = ["json", "tls"] }

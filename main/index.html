@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&amp;family=JetBrains+Mono:wght@400&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#1A1A1A",
+              paper: "#F4F1EA",
+              "paper-dark": "#EAE6DD",
+              accent: "#C94B28",
+              line: "#D1CDC5",
+              muted: "#8C8C8C",
+              ink: "#1A1A1A",
+            },
+            fontFamily: {
+              sans: ["Inter", "sans-serif"],
+              serif: ["Playfair Display", "serif"],
+              mono: ["JetBrains Mono", "monospace"],
+            },
+            borderRadius: {
+              none: "0px",
+              DEFAULT: "0px",
+            },
+            spacing: {
+              128: "32rem",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      .editorial-text {
+        font-family: "Playfair Display", serif;
+      }
+
+      .mono-text {
+        font-family: "JetBrains Mono", monospace;
+      }
+
+      /* Scroll-triggered reveal (see src/journal/scroll.rs). Elements start
+         faded/offset; the IntersectionObserver adds `is-visible` the first
+         time each one enters the viewport, which runs this transition. */
+      [data-reveal] {
+        opacity: 0;
+        transform: translateY(28px);
+        transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+          transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+        will-change: opacity, transform;
+      }
+
+      [data-reveal].is-visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        [data-reveal] {
+          opacity: 1;
+          transform: none;
+          transition: none;
+        }
+      }
+    </style>
+  </head>
+  <body id="main" class="bg-black"></body>
+</html>

@@ -1,0 +1,39 @@
+/* Per-character "pop" when a new asterisk appears in the password field. */
+@keyframes login-char-pop {
+  0%   { transform: scale(0.3); opacity: 0; }
+  55%  { transform: scale(1.2); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.login-char {
+  animation: login-char-pop 200ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+/* Blinking cursor shown only while the field is empty and focused. */
+@keyframes login-caret-blink {
+  0%, 45%  { opacity: 1; }
+  50%, 95% { opacity: 0; }
+  100%     { opacity: 1; }
+}
+.login-caret {
+  animation: login-caret-blink 1.1s steps(1, start) infinite;
+}
+
+/* Shake feedback for an empty/wrong password attempt. */
+@keyframes login-shake {
+  10%, 90%      { transform: translateX(-1px); }
+  20%, 80%      { transform: translateX(2px); }
+  30%, 50%, 70% { transform: translateX(-4px); }
+  40%, 60%      { transform: translateX(4px); }
+}
+.login-shake {
+  animation: login-shake 400ms ease-in-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .login-char,
+  .login-caret,
+  .login-shake {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

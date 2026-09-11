@@ -1,0 +1,23 @@
+[web.wasm.opt]
+debug = false
+level = "z"
+
+# base_path is intentionally left unset here rather than hard-coded to a
+# repo name: Dioxus bakes it into the wasm at compile time, and a value set
+# here breaks `dx serve` for local development (DioxusLabs/dioxus#2285).
+# `.github/workflows/deploy.yml` injects the right value with `sed` right
+# before the production build, based on the actual repo name at deploy time.
+# [web.app]
+# base_path = "your-repo-name"
+
+[application]
+name = "Github Journal"
+default_platform = "web"
+
+[web.watcher]
+watch_path = ["src", "assets"]
+reload_html = true
+
+# [web.resource]
+# style = []
+# script = []
