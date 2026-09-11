@@ -1,0 +1,13 @@
+# Rust
+/target
+**/target
+Cargo.lock
+
+# Dioxus build output
+main/dist
+
+# fetch-stats output (generated fresh by CI every run)
+/data.json
+
+# OS/editor cruft
+.DS_Store
