@@ -340,7 +340,7 @@ pub fn Footer(year: i32) -> Element {
                     }
                     div { class: "pt-12 mt-4 w-full flex flex-col md:flex-row justify-between items-center border-t border-line/30 gap-6",
                         div { class: "flex items-center gap-3",
-                            span { class: "font-mono text-muted uppercase tracking-tight", "Built with Bun, Tailwind & HTML" }
+                            span { class: "font-mono text-muted uppercase tracking-tight", "Built with Rust, Dioxus & TailwindCSS" }
                             span { class: "h-px w-8 bg-line" }
                             span { class: "font-mono text-muted uppercase tracking-tight", "v1.0.1" }
                         }

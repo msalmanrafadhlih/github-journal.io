@@ -9,19 +9,30 @@ use dioxus::prelude::*;
 use components::{ChronicleSection, EndOfStream, Footer, Hero, PinnedSection};
 use data::AppData;
 
-/// Bundled at compile time so the page always has something to render, even
-/// before `data.json` is fetched — or if that fetch fails for any reason.
-/// `data.json` itself is written next to `index.html` by the `fetch-stats`
-/// crate, running on a schedule in `.github/workflows/deploy.yml` (the same
-/// pattern the `github-profile.svg` generator uses for its own stats).
+/// Bundled at compile time so the page always has something to render
+/// immediately, and as a fallback if the live fetch below fails for any
+/// reason (Worker cold-started wrong, network hiccup, rate-limited, etc.)
+/// — the page should never show a broken/empty state.
 const SAMPLE_DATA: &str = include_str!("../../data/journal.sample.json");
 const FAVICON: &str = "https://avatars.githubusercontent.com/u/141149698";
 
+/// The Cloudflare Worker that now does what the old `fetch-stats` CI job +
+/// `data.json` used to: run the GitHub GraphQL query and hand back JSON in
+/// this exact shape, cached at the edge for a few minutes. See
+/// `worker/README.md` for setup/deploy instructions.
+///
+/// This has to be a full absolute URL (unlike the old relative
+/// `data.json` path) since it points at a different origin than the
+/// GitHub Pages site itself. Update this after your first
+/// `wrangler deploy` in `worker/`.
+const STATS_API_URL: &str = "https://github-journal-stats.YOUR-SUBDOMAIN.workers.dev/api/stats";
+
+fn main() {
+    dioxus::launch(App);
+}
+
 async fn load_data() -> Result<AppData, String> {
-    // Relative (no leading `/`) so this resolves correctly whether the site
-    // is served from the domain root or from a GitHub Pages project
-    // subpath (e.g. `username.github.io/repo-name/data.json`).
-    if let Ok(resp) = gloo_net::http::Request::get("data.json").send().await {
+    if let Ok(resp) = gloo_net::http::Request::get(STATS_API_URL).send().await {
         if resp.ok() {
             if let Ok(text) = resp.text().await {
                 if let Ok(parsed) = serde_json::from_str::<AppData>(&text) {
@@ -34,7 +45,7 @@ async fn load_data() -> Result<AppData, String> {
 }
 
 #[component]
-pub fn JournalPage() -> Element {
+pub fn App() -> Element {
     let mut data: Signal<Option<AppData>> = use_signal(|| None);
     let mut load_error: Signal<Option<String>> = use_signal(|| None);
 

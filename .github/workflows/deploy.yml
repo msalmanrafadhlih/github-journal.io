@@ -3,11 +3,12 @@ name: Deploy Github Journal
 on:
   push:
     branches: [main]
-  schedule:
-    # Refreshes data.json (and redeploys) every 6 hours even with no new
-    # commits, so contribution/star counts stay close to real-time.
-    - cron: "0 */6 * * *"
+    paths-ignore:
+      - "worker/**"
   workflow_dispatch: {}
+# No more `schedule:` cron here — the site now fetches live data at
+# runtime from the Cloudflare Worker in worker/ (see deploy-worker.yml),
+# so there's nothing left for a periodic rebuild to refresh.
 
 # Only one deployment at a time; a newer run cancels an in-progress older one.
 concurrency:
@@ -34,23 +35,12 @@ jobs:
       - name: Cache cargo build
         uses: Swatinem/rust-cache@v2
         with:
-          workspaces: |
-            fetch-stats
-            main
+          workspaces: main
 
       - name: Install dioxus-cli
         run: cargo install dioxus-cli --locked
 
-      # [1/3] Live data. Uses the default GITHUB_TOKEN, which is enough to
-      # read public profile/contribution data via GraphQL. If you also want
-      # private contributions counted, add a PAT with `read:user` scope as
-      # a repo secret named STATS_TOKEN and this will pick it up instead.
-      - name: Fetch live GitHub stats
-        run: cargo run --release --manifest-path fetch-stats/Cargo.toml -- data.json
-        env:
-          GITHUB_TOKEN: ${{ secrets.STATS_TOKEN || secrets.GITHUB_TOKEN }}
-
-      # [2/3] Build the site. base_path is injected here (not committed) so
+      # [1/2] Build the site. base_path is injected here (not committed) so
       # local `dx serve` keeps working without it — see Dioxus.toml.
       - name: Configure base path for this repo
         run: |
@@ -72,9 +62,10 @@ jobs:
           mv main/dist/public/* main/dist/
           rmdir main/dist/public
           cp main/dist/index.html main/dist/404.html
-          cp data.json main/dist/data.json
 
-      # [3/3] Hand the finished folder to GitHub Pages.
+      # [2/2] Hand the finished folder to GitHub Pages. Live data itself is
+      # fetched client-side at runtime from the Worker in worker/ — nothing
+      # data-related to bundle here anymore.
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
