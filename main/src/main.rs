@@ -13,7 +13,7 @@ use data::AppData;
 /// immediately, and as a fallback if the live fetch below fails for any
 /// reason (Worker cold-started wrong, network hiccup, rate-limited, etc.)
 /// — the page should never show a broken/empty state.
-const SAMPLE_DATA: &str = include_str!("../../data/journal.sample.json");
+const SAMPLE_DATA: &str = include_str!("../data/journal.sample.json");
 const FAVICON: &str = "https://avatars.githubusercontent.com/u/141149698";
 
 /// The Cloudflare Worker that now does what the old `fetch-stats` CI job +
