@@ -25,7 +25,7 @@ const FAVICON: &str = "https://avatars.githubusercontent.com/u/141149698";
 /// `data.json` path) since it points at a different origin than the
 /// GitHub Pages site itself. Update this after your first
 /// `wrangler deploy` in `worker/`.
-const STATS_API_URL: &str = "https://github-journal-stats.YOUR-SUBDOMAIN.workers.dev/api/stats";
+const STATS_API_URL: &str = "https://github-journal-stats.msalmanrafadhlih.workers.dev";
 
 fn main() {
     dioxus::launch(App);
