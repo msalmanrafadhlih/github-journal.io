@@ -4,10 +4,10 @@ name: Deploy Stats Worker
 # deploy independently of each other. This only runs when worker/ itself
 # changes (or manually), not on every site push.
 on:
-  push:
-    branches: [main]
-    paths:
-      - "worker/**"
+  # push:
+  #   branches: [main]
+  #   paths:
+  #     - "worker/**"
   workflow_dispatch: {}
 
 jobs:
