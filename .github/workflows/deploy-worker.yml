@@ -1,0 +1,34 @@
+name: Deploy Stats Worker
+
+# Separate from deploy.yml on purpose: the Worker and the static site now
+# deploy independently of each other. This only runs when worker/ itself
+# changes (or manually), not on every site push.
+on:
+  push:
+    branches: [main]
+    paths:
+      - "worker/**"
+  workflow_dispatch: {}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Requires a repo secret, set once under
+      # Settings -> Secrets and variables -> Actions:
+      #   CLOUDFLARE_API_TOKEN   (needs "Edit Cloudflare Workers" permission)
+      # Add CLOUDFLARE_ACCOUNT_ID too if your token spans multiple accounts.
+      #
+      # GITHUB_TOKEN used by the Worker *at runtime* (to call the GitHub
+      # GraphQL API) is a completely separate thing from the above — that
+      # one is set once via `wrangler secret put GITHUB_TOKEN` (see
+      # worker/README.md) and lives encrypted on Cloudflare, not here.
+      - name: Deploy to Cloudflare Workers
+        uses: cloudflare/wrangler-action@v4
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: worker

@@ -1,8 +1,11 @@
 name: Deploy Github Journal
 
 on:
-  push:
+  workflow_run:
+    workflows: ["Deploy Stats Worker"]
     branches: [main]
+    types: 
+      - success
     paths-ignore:
       - "worker/**"
   workflow_dispatch: {}
