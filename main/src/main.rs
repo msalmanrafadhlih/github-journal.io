@@ -9,23 +9,9 @@ use dioxus::prelude::*;
 use components::{ChronicleSection, EndOfStream, Footer, Hero, PinnedSection};
 use data::AppData;
 
-/// Bundled at compile time so the page always has something to render
-/// immediately, and as a fallback if the live fetch below fails for any
-/// reason (Worker cold-started wrong, network hiccup, rate-limited, etc.)
-/// — the page should never show a broken/empty state.
 const SAMPLE_DATA: &str = include_str!("../data/journal.sample.json");
 const FAVICON: &str = "https://avatars.githubusercontent.com/u/141149698";
-
-/// The Cloudflare Worker that now does what the old `fetch-stats` CI job +
-/// `data.json` used to: run the GitHub GraphQL query and hand back JSON in
-/// this exact shape, cached at the edge for a few minutes. See
-/// `worker/README.md` for setup/deploy instructions.
-///
-/// This has to be a full absolute URL (unlike the old relative
-/// `data.json` path) since it points at a different origin than the
-/// GitHub Pages site itself. Update this after your first
-/// `wrangler deploy` in `worker/`.
-const STATS_API_URL: &str = "https://github-journal-stats.msalmanrafadhlih.workers.dev/api/stats";
+const STATS_API_URL: Option<&str> = option_env!("STATS_API_URL");
 
 fn main() {
     dioxus::launch(App);
